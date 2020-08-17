@@ -240,13 +240,12 @@ summary_municipal <- data_obce %>%
 summary_municipal_paragraph <- data_obce %>%
   filter(month == 12) %>%
   select(year, zuj, `0FUNC_AREA`, ZCMMT_ITM, ZU_ROZKZ) %>%
-  mutate(ZCMMT_ITM = paste0(ifelse(ZCMMT_ITM %in% items_code_expenditure$Položka, "e_", "i_"), ZCMMT_ITM)) %>%
-  group_by(year, zuj, ZCMMT_ITM) %>%
+  mutate(`0FUNC_AREA` = paste0(ifelse(ZCMMT_ITM %in% items_code_expenditure$Položka, "e_", "i_"), `0FUNC_AREA`)) %>%
+  group_by(year, zuj, `0FUNC_AREA`) %>%
   summarise(ZU_ROZKZ = sum(as.numeric(ZU_ROZKZ))) %>%
-  pivot_wider(id_cols = c(year, zuj), values_from = ZU_ROZKZ, names_from = ZCMMT_ITM, values_fill = list(ZU_ROZKZ = 0))
+  pivot_wider(id_cols = c(year, zuj), values_from = ZU_ROZKZ, names_from = `0FUNC_AREA`, values_fill = list(ZU_ROZKZ = 0))
 
 # Join all the data
-
 data_complete <- key_bind %>%
   ungroup() %>%
   left_join(data_c_all %>%
